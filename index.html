@@ -3,15 +3,13 @@
 <head>
 
     <meta charset="utf-8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
     <title>webar</title>
-    
+
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="//jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
     <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
     <style>
         .ui {
             position: absolute;
@@ -55,7 +53,7 @@
             display:block;
             visibility:hidden;
         }
-      
+
         #button{
               border: none;
               padding: 3px 10px;
@@ -65,10 +63,10 @@
               background-color: white;
               border-radius: 10px;
         }
-        
+
         .visible{
             visibility: visible !important;
-            border: 2px solid white; 
+            border: 2px solid white;
         }
 
          .disabled{
@@ -76,21 +74,41 @@
             color:#cccccc;
             visibility:hidden;
         }
+
+        .arjs-loader {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .arjs-loader div {
+            text-align: center;
+            font-size: 1.25em;
+            color: white;
+        }
+
     </style>
   </head>
-  
+
       <body style="margin: 0; overflow: hidden;">
 
-        <a-scene   
+        <a-scene
                    vr-mode-ui="enabled: false;"
                    renderer="logarithmicDepthBuffer: true;"
-                   embedded 
+                   embedded
                    arjs="trackingMethod: best; sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;"
         >
 <!--           <a-marker preset="hiro"> -->
-            <a-marker        
+            <a-marker
                       type="pattern"
-                      url="https://cdn.glitch.global/af3ac858-a626-4180-a286-8a61807f0839/pattern-Un.patt?v=1645180358962"  
+                      url="https://cdn.glitch.global/af3ac858-a626-4180-a286-8a61807f0839/pattern-Un.patt?v=1645180358962"
             >
                 <a-entity
                         gltf-model="trex/pineapple/scene.gltf"
@@ -99,13 +117,12 @@
                         rotation="-90 0 0"
                 >
                 </a-entity>
-            
+
         </a-marker>
             <a-entity camera></a-entity >
         </a-scene>
 
         <div class ="ui">
-          
             <img id="snap">
             <a href="#" id="delete-photo" title="Delete Photo" class=" disabled">
                 <i class="material-icons">delete</i>
@@ -116,7 +133,7 @@
             <a href="#" id="download-photo" download="selfie.png" title="Save Photo" class= "disabled" target= "_blank">
                 <i class="material-icons">file_download</i>
             </a>
-          
+
             <div class="controls">
               <select id="select">
                 <option></option>
@@ -127,7 +144,6 @@
         </div>
       </body >
     <script >
-
         const image = document.querySelector('#snap');
         const take_photo_btn = document.querySelector('#take-photo');
         const delete_photo_btn = document.querySelector('#delete-photo');
@@ -142,7 +158,7 @@
             //snap shot display.
             image.setAttribute('src', snap);
             image.classList.add('visible');
-            
+
             take_photo_btn.classList.add("disabled");
 
             //delete button and save button effective
@@ -151,9 +167,9 @@
 
             // //Save button pass snapshot
             download_photo_btn.href = snap;
-            
+
         });
-        
+
         //delete button
 
           delete_photo_btn.addEventListener("click", function(e){
@@ -170,7 +186,7 @@
           });
 
 
-        //take a snapshot
+    //take a snapshot
 
           function takeSnapshot(video) {
             let resizedCanvas = document.createElement("canvas");
@@ -178,6 +194,7 @@
             let width = video.videoWidth;
             let height = video.videoHeight;
             let aScene = document.querySelector("a-scene").components.screenshot.getCanvas("perspective");
+
 
 
         if (width && height) {
@@ -204,9 +221,7 @@
 
               resizedContext.drawImage(aScene, marginLeft, 0, scaledWidth, height);
           }
-
         return resizedCanvas.toDataURL('image/png');
-          
         }}
    </script>
    <script src="app.js"></script>
