@@ -1,229 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
     <title>webar</title>
-
+    <link rel="stylesheet" href="style.css"/>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="//jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
-    <link href="//fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        .ui {
-            position: absolute;
-            z-index: 100;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: auto;
-            margin: 0;
-            padding: 10px 15px 30px;
-            text-align: center;
-            box-sizing: border-box;
-        }
+    <link
+            href="//fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+    />
+</head>
 
-        .ui a {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            background-color: #ffffff;
-            line-height: 100%;
-            color: #303030;
-            margin: 10px 3px;
-            border-radius: 50%;
-            position: relative;
-        }
+<body style="margin: 0; overflow: hidden">
+<a-scene
+        vr-mode-ui="enabled: false;"
+        renderer="logarithmicDepthBuffer: true;"
+        embedded
+        arjs="trackingMethod: best; sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;"
+>
+    <a-marker
+            type="pattern"
+            url="trex/marker/pattern-StL.patt"
+    >
+<!--        url="https://cdn.glitch.global/af3ac858-a626-4180-a286-8a61807f0839/pattern-Un.patt?v=1645180358962"-->
 
-        .ui a i {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-        }
-
-        .ui a:active {
-            color: #ff0000;
-        }
-
-        #snap {
-            max-width:100%;
-            height:auto;
-            display:block;
-            visibility:hidden;
-        }
-
-        #button{
-              border: none;
-              padding: 3px 10px;
-              font-size: 16px;
-              font-family: HelveticaNeue, sans-serif;
-              text-transform: none;
-              background-color: white;
-              border-radius: 10px;
-        }
-
-        .visible{
-            visibility: visible !important;
-            border: 2px solid white;
-        }
-
-         .disabled{
-            pointer-events: none;
-            color:#cccccc;
-            visibility:hidden;
-        }
-
-        .arjs-loader {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .arjs-loader div {
-            text-align: center;
-            font-size: 1.25em;
-            color: white;
-        }
-
-    </style>
-  </head>
-
-      <body style="margin: 0; overflow: hidden;">
-
-        <a-scene
-                   vr-mode-ui="enabled: false;"
-                   renderer="logarithmicDepthBuffer: true;"
-                   embedded
-                   arjs="trackingMethod: best; sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;"
+        <a-entity
+                gltf-model="trex/glb/Pineapple.glb"
+                scale="1 1 1"
+                position="0 0 2"
+                rotation="-90 0 0"
         >
-<!--           <a-marker preset="hiro"> -->
-            <a-marker
-                      type="pattern"
-                      url="https://cdn.glitch.global/af3ac858-a626-4180-a286-8a61807f0839/pattern-Un.patt?v=1645180358962"
-            >
-                <a-entity
-                        gltf-model="trex/pineapple/scene.gltf"
-                        scale="2 2 2"
-                        position="0 0 2"
-                        rotation="-90 0 0"
-                >
-                </a-entity>
+        </a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+</a-scene>
 
-        </a-marker>
-            <a-entity camera></a-entity >
-        </a-scene>
+<div class="ui">
+    <img id="snap"/>
+    <a href="#"
+       id="delete-photo"
+       title="Delete Photo"
+       class="disabled"
+    >
+        <i class="material-icons">delete</i>
+    </a>
+    <a href=""
+       id="take-photo"
+       title=" Take Photo"
+    >
+        <i class="material-icons">photo_camera</i>
+    </a>
+    <a href="#"
+       id="download-photo"
+       download="selfie.png"
+       title="Save Photo"
+       class="disabled"
+       target="_blank"
+    >
+        <i class="material-icons">file_download</i>
+    </a>
 
-        <div class ="ui">
-            <img id="snap">
-            <a href="#" id="delete-photo" title="Delete Photo" class=" disabled">
-                <i class="material-icons">delete</i>
-            </a>
-            <a href="" id="take-photo" title=" Take Photo">
-                <i class="material-icons">photo_camera</i>
-            </a>
-            <a href="#" id="download-photo" download="selfie.png" title="Save Photo" class= "disabled" target= "_blank">
-                <i class="material-icons">file_download</i>
-            </a>
-
-            <div class="controls">
-              <select id="select">
-                <option></option>
-              </select>
-              <button id="button">Выбрать</button>
-            </div>
-
-        </div>
-      </body >
-    <script >
-        const image = document.querySelector('#snap');
-        const take_photo_btn = document.querySelector('#take-photo');
-        const delete_photo_btn = document.querySelector('#delete-photo');
-        const download_photo_btn = document.querySelector('#download-photo');
-
-        //Snapshot button
-          take_photo_btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            let video = document.querySelector('video');
-            let snap = takeSnapshot(video);
-
-            //snap shot display.
-            image.setAttribute('src', snap);
-            image.classList.add('visible');
-
-            take_photo_btn.classList.add("disabled");
-
-            //delete button and save button effective
-            delete_photo_btn.classList.remove("disabled");
-            download_photo_btn.classList.remove("disabled");
-
-            // //Save button pass snapshot
-            download_photo_btn.href = snap;
-
-        });
-
-        //delete button
-
-          delete_photo_btn.addEventListener("click", function(e){
-            e.preventDefault();
-
-            //hide the snapshot
-            image.setAttribute('src', "");
-            image.classList.remove("visible");
-
-            //delete button and save button invalid
-            take_photo_btn.classList.remove("disabled");
-            delete_photo_btn.classList.add("disabled");
-            download_photo_btn.classList.add("disabled");
-          });
-
-
-    //take a snapshot
-
-          function takeSnapshot(video) {
-            let resizedCanvas = document.createElement("canvas");
-            let resizedContext = resizedCanvas.getContext("2d");
-            let width = video.videoWidth;
-            let height = video.videoHeight;
-            let aScene = document.querySelector("a-scene").components.screenshot.getCanvas("perspective");
-
-
-
-        if (width && height) {
-
-            //set the size of the canvas video
-            resizedCanvas.width = width;
-            resizedCanvas.height = height;
-
-            //copy video to Canvas
-            resizedContext.drawImage(video, 0, 0, width, height);
-
-            //in the angle of view of the camera changes with the reduction processing of the ar side
-              if (width > height) {
-
-            //Horizontal (PC)
-            resizedContext.drawImage(aScene, 0, 0, width, height);
-
-            } else {
-
-            //Vertical (smartphone )
-              let scale = height / width;
-              let scaledWidth = height * scale;
-              let marginLeft = (width - scaledWidth) / 2;
-
-              resizedContext.drawImage(aScene, marginLeft, 0, scaledWidth, height);
-          }
-        return resizedCanvas.toDataURL('image/png');
-        }}
-   </script>
-   <script src="app.js"></script>
-
+    <div class="controls">
+        <button id="button" style="display: none">
+            <i id="swap-icon" class="material-icons">cached</i>
+        </button>
+    </div>
+</div>
+</body>
+<script src="app.js"></script>
 </html>
